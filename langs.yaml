@@ -1,0 +1,5 @@
+---
+metawiki:
+  domain: 'meta.miraheze.org'
+testwiki:
+  domain: 'test.miraheze.org'
