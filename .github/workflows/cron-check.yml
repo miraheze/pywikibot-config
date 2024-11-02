@@ -1,0 +1,60 @@
+name: Check if cron.yaml is valid
+
+on:
+  push:
+    paths:
+      - .github/workflows/cron-check.yml
+      - cron.yaml
+
+  pull_request:
+    paths:
+      - .github/workflows/cron-check.yml
+      - cron.yaml
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install PyYAML
+        run: pip3 install pyyaml
+
+      - name: Run cron.yaml Check
+        run: |
+          python3 -c '
+          import yaml
+          musthave = ["name", "ensure", "script", "scriptparams", "hour", "minute", "month", "monthday", "weekday"]
+          with open("cron.yaml", "r") as file:
+              data = yaml.safe_load(file)
+              for dbname in data.keys():
+                  for i, dict in enumerate(data[dbname]):
+                      if all(a == b for a, b in zip(musthave, dict.keys())) is False:
+                          print(f"Missing keys in dict {i} of wiki {dbname}, have: {dict.keys()}, expected: {musthave}")
+                          exit(1)
+              print("No issues detected with cron.yaml.")
+              exit(0)
+          '
+
+  notify-irc:
+    needs: check
+    runs-on: ubuntu-latest
+    if: ${{ always() && github.repository_owner == 'miraheze' && ( github.ref == 'refs/heads/master' || github.event_name == 'pull_request' ) }}
+    steps:
+      - name: failed
+        uses: technote-space/workflow-conclusion-action@v3
+      - uses: rectalogic/notify-irc@v2
+        if: env.WORKFLOW_CONCLUSION == 'failure'
+        with:
+          channel: "#miraheze-tech-ops"
+          server: "irc.libera.chat"
+          nickname: miraheze-github
+          message: ${{ github.repository }} - ${{ github.actor }} the build has errored.
+          sasl_password: ${{ secrets.IRC_MIRAHEZEBOTS }}
