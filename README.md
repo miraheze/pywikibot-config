@@ -6,7 +6,7 @@ Infrastructure Specialists have push access. This repo is pulled by puppet autom
 
 # Adding new crontab entries
 
-In cron.yaml, crontab entries for your wiki is added as arrays in a top level key, where that top level key must be your wiki's database name, and each individual array results in a crontab entry.
+In cron.yaml, crontab entries for your wiki are added as arrays in a top level key, where that top level key must be your wiki's database name, and each individual array results in a crontab entry.
 
 Example:
 
