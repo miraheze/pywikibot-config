@@ -18,9 +18,9 @@ metawiki: # your wiki's database name
     scriptparams: 'Template:Autoarchive/config' # parameters for that script, set to '' if there are no parameters
     hour: '0' # regular crontab parameters
     minute: '0'
-    month: 'absent' # absent = *
-    monthday: 'absent'
-    weekday: 'absent'
+    month: '*'
+    monthday: '*'
+    weekday: '*'
 ```
 
 Results in `0 0 * * * pwb.py archivebot Template:Autoarchive/config -lang:metawiki`
