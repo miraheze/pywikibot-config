@@ -1,0 +1,11 @@
+---
+metawiki:
+  - name: 'archivebot-job'
+    ensure: 'present'
+    script: 'archivebot'
+    scriptparams: 'Template:Autoarchive/config'
+    hour: '0'
+    minute: '0'
+    month: 'absent'
+    monthday: 'absent'
+    weekday: 'absent'
