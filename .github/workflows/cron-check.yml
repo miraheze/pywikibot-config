@@ -45,7 +45,8 @@ jobs:
                           print(f"Missing keys in dict {i} of wiki {dbname}, have: {dict.keys()}, expected: {musthave}")
                           exit(1)
                       if dict["name"] in nameList:
-                          print(f"Cron entry with name {dict['name']} on wiki {dbname} defined twice")
+                          cronName = dict["name"]
+                          print(f"Cron entry with name {cronName} on wiki {dbname} defined twice")
                           exit(1)
                       nameList.append(dict["name"])
               print("No issues detected with cron.yaml.")
