@@ -4,11 +4,13 @@ on:
   push:
     paths:
       - .github/workflows/cron-check.yml
+      - scripts/cron-check.py
       - cron.yaml
 
   pull_request:
     paths:
       - .github/workflows/cron-check.yml
+      - scripts/cron-check.py
       - cron.yaml
 
 jobs:
@@ -27,31 +29,8 @@ jobs:
       - name: Install PyYAML
         run: pip3 install pyyaml
 
-      - name: Run cron.yaml Check
-        run: |
-          python3 -c '
-          import yaml
-          import re
-          musthave = ["name", "ensure", "script", "scriptparams", "hour", "minute", "month", "monthday", "weekday"]
-          with open("cron.yaml", "r") as file:
-              data = yaml.safe_load(file)
-              for dbname in data.keys():
-                  if re.search("^[a-z0-9]*$", dbname) is None:
-                      print(f"Invalid dbname {dbname}")
-                      exit(1)
-                  nameList = []
-                  for i, dict in enumerate(data[dbname]):
-                      if all(a == b for a, b in zip(musthave, dict.keys())) is False:
-                          print(f"Missing keys in dict {i} of wiki {dbname}, have: {dict.keys()}, expected: {musthave}")
-                          exit(1)
-                      if dict["name"] in nameList:
-                          cronName = dict["name"]
-                          print(f"Cron entry with name {cronName} on wiki {dbname} defined twice")
-                          exit(1)
-                      nameList.append(dict["name"])
-              print("No issues detected with cron.yaml.")
-              exit(0)
-          '
+      - name: Run scripts/cron-check.py
+        run: python3 scripts/cron-check.py
 
   notify-irc:
     needs: check
