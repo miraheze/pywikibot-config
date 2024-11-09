@@ -19,6 +19,16 @@ import yaml
 import re
 # This list defines the keys every cron entry must have in the YAML
 musthave = ["name", "ensure", "script", "scriptparams", "hour", "minute", "month", "monthday", "weekday"]
+def isValidCronTime(cronValue: str, minValue: int, maxValue: int) -> bool:
+    if cronValue == "*":
+        return True
+    try:
+        if int(cronValue) < minValue or int(cronValue) > maxValue:
+            return False
+        else:
+            return True
+    except ValueError:
+        return False
 with open("cron.yaml", "r") as file:
     data = yaml.safe_load(file)
     for dbname in data.keys():
@@ -37,26 +47,21 @@ with open("cron.yaml", "r") as file:
             if dict["ensure"] != "present" and dict["ensure"] != "absent":
                 print(f"Invalid value for ensure in dict {i} of dbname {dbname}, have: {dict['ensure']}, expected: either present or absent")
                 exit(1)
-            if dict["hour"] != "*":
-                if int(dict["hour"]) < 0 or int(dict["hour"]) > 23:
-                    print(f"Invalid value for hour in dict {i} of dbname {dbname}, have: {dict['hour']}, expected: either * or a number between 0 and 23 inclusive")
-                    exit(1)
-            if dict["minute"] != "*":
-                if int(dict["minute"]) < 0 or int(dict["minute"]) > 59:
-                    print(f"Invalid value for minute in dict {i} of dbname {dbname}, have: {dict['minute']}, expected: either * or a number between 0 and 59 inclusive")
-                    exit(1)
-            if dict["month"] != "*":
-                if int(dict["month"]) < 1 or int(dict["month"]) > 12:
-                    print(f"Invalid value for month in dict {i} of dbname {dbname}, have: {dict['month']}, expected: either * or a number between 1 and 12 inclusive")
-                    exit(1)
-            if dict["monthday"] != "*":
-                if int(dict["monthday"]) < 1 or int(dict["monthday"]) > 31:
-                    print(f"Invalid value for monthday in dict {i} of dbname {dbname}, have: {dict['monthday']}, expected: either * or a number between 1 and 31 inclusive")
-                    exit(1)
-            if dict["weekday"] != "*":
-                if int(dict["weekday"]) < 0 or int(dict["weekday"]) > 6:
-                    print(f"Invalid value for weekday in dict {i} of dbname {dbname}, have: {dict['weekday']}, expected: either * or a number between 0 and 6 inclusive")
-                    exit(1)
+            if isValidCronTime(dict["hour"], 0, 23) is False:
+                print(f"Invalid value for hour in dict {i} of dbname {dbname}, have: {dict['hour']}, expected: either * or a number between 0 and 23 inclusive")
+                exit(1)
+            if isValidCronTime(dict["minute"], 0, 59) is False:
+                print(f"Invalid value for minute in dict {i} of dbname {dbname}, have: {dict['minute']}, expected: either * or a number between 0 and 59 inclusive")
+                exit(1)
+            if isValidCronTime(dict["month"], 1, 12) is False:
+                print(f"Invalid value for month in dict {i} of dbname {dbname}, have: {dict['month']}, expected: either * or a number between 1 and 12 inclusive")
+                exit(1)
+            if isValidCronTime(dict["monthday"], 1, 31) is False:
+                print(f"Invalid value for monthday in dict {i} of dbname {dbname}, have: {dict['monthday']}, expected: either * or a number between 1 and 31 inclusive")
+                exit(1)
+            if isValidCronTime(dict["weekday"], 0, 6) is False:
+                print(f"Invalid value for weekday in dict {i} of dbname {dbname}, have: {dict['weekday']}, expected: either * or a number between 0 and 6 inclusive")
+                exit(1)
 print("No issues detected with cron.yaml.")
 exit(0)
 
