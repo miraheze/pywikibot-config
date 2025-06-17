@@ -1,15 +1,15 @@
-name: Check if cron.yaml is sorted alphabetically
+name: Check if timers.yaml is sorted alphabetically
 
 on:
   push:
     paths:
-      - .github/workflows/cron-sorting-check.yml
-      - cron.yaml
+      - .github/workflows/timers-sorting-check.yml
+      - timers.yaml
 
   pull_request:
     paths:
-      - .github/workflows/cron-sorting-check.yml
-      - cron.yaml
+      - .github/workflows/timers-sorting-check.yml
+      - timers.yaml
 
 jobs:
   check:
@@ -37,14 +37,14 @@ jobs:
               out_of_order_keys = [keys[i] for i in range(1, len(keys)) if keys[i] < keys[i-1]]
               return out_of_order_keys
 
-          with open("cron.yaml", "r") as file:
+          with open("timers.yaml", "r") as file:
               data = yaml.safe_load(file)
 
           out_of_order = check_alphabetical_order(data)
           if len(out_of_order) == 0:
-              print("Top-level keys in cron.yaml are sorted alphabetically.")
+              print("Top-level keys in timers.yaml are sorted alphabetically.")
           else:
-              print("Top-level keys in cron.yaml are not sorted alphabetically:")
+              print("Top-level keys in timers.yaml are not sorted alphabetically:")
               for key in out_of_order:
                   print(key)
               exit(1)
