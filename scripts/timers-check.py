@@ -24,7 +24,7 @@ musthave = ["name", "ensure", "script", "scriptparams", "hour", "minute", "month
 # Valid systemd weekday values
 valid_systemd_weekdays = {'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', '*'}
 
-def isValidTimer(value: str, minValue: int, maxValue: int) -> bool:
+def isValidForTimer(value: str, minValue: int, maxValue: int) -> bool:
     if value == "*":
         return True
     try:
@@ -56,16 +56,16 @@ with open("timers.yaml", "r") as file:
             if dict["ensure"] != "present" and dict["ensure"] != "absent":
                 print(f"Invalid value for ensure in dict {i} of dbname {dbname}, have: {dict['ensure']}, expected: either present or absent")
                 exit(1)
-            if not isValidTimer(dict["hour"], 0, 23):
+            if not isValidForTimer(dict["hour"], 0, 23):
                 print(f"Invalid value for hour in dict {i} of dbname {dbname}, have: {dict['hour']}, expected: either * or a number between 0 and 23 inclusive")
                 exit(1)
-            if not isValidTimer(dict["minute"], 0, 59):
+            if not isValidForTimer(dict["minute"], 0, 59):
                 print(f"Invalid value for minute in dict {i} of dbname {dbname}, have: {dict['minute']}, expected: either * or a number between 0 and 59 inclusive")
                 exit(1)
-            if not isValidTimer(dict["month"], 1, 12):
+            if not isValidForTimer(dict["month"], 1, 12):
                 print(f"Invalid value for month in dict {i} of dbname {dbname}, have: {dict['month']}, expected: either * or a number between 1 and 12 inclusive")
                 exit(1)
-            if not isValidTimer(dict["monthday"], 1, 31):
+            if not isValidForTimer(dict["monthday"], 1, 31):
                 print(f"Invalid value for monthday in dict {i} of dbname {dbname}, have: {dict['monthday']}, expected: either * or a number between 1 and 31 inclusive")
                 exit(1)
             if not isValidSystemdWeekday(dict["weekday"]):
