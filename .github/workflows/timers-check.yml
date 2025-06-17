@@ -1,17 +1,17 @@
-name: Check if cron.yaml is valid
+name: Check if timers.yaml is valid
 
 on:
   push:
     paths:
-      - .github/workflows/cron-check.yml
-      - scripts/cron-check.py
-      - cron.yaml
+      - .github/workflows/timers-check.yml
+      - scripts/timers-check.py
+      - timers.yaml
 
   pull_request:
     paths:
-      - .github/workflows/cron-check.yml
-      - scripts/cron-check.py
-      - cron.yaml
+      - .github/workflows/timers-check.yml
+      - scripts/timers-check.py
+      - timers.yaml
 
 jobs:
   check:
@@ -29,8 +29,8 @@ jobs:
       - name: Install PyYAML
         run: pip3 install pyyaml
 
-      - name: Run scripts/cron-check.py
-        run: python3 scripts/cron-check.py
+      - name: Run scripts/timers-check.py
+        run: python3 scripts/timers-check.py
 
   notify-irc:
     needs: check
