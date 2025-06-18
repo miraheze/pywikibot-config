@@ -16,9 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import yaml
 import re
 import sys
+import yaml
 
 # This list defines the keys every periodic job entry must have in the YAML
 required_keys = ['name', 'ensure', 'script', 'scriptparams', 'hour', 'minute', 'month', 'monthday', 'weekday']
