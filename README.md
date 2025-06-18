@@ -1,36 +1,48 @@
 # Pywikibot config
 
-Pywikibot config for [User:BeeBot](https://meta.miraheze.org/wiki/User:BeeBot). Contains crontab config and family configuration.
+Pywikibot config for [User:BeeBot](https://meta.miraheze.org/wiki/User:BeeBot). Contains periodic jobs (systemd timers) and family configuration.
 
-Infrastructure Specialists have push access. This repo is pulled by puppet automatically.
+Infrastructure Specialists have push access. This repo is pulled by Puppet automatically.
 
-# Adding new crontab entries
+---
 
-In cron.yaml, crontab entries for your wiki are added as arrays in a top level key, where that top level key must be your wiki's database name, and each individual array results in a crontab entry.
+## Adding new periodic jobs
+
+In `periodic_jobs.yaml`, entries for your wiki are added as arrays under a top-level key. That key must be your wiki's **database name**, and each array item defines one `systemd` timer + service.
 
 For example:
 
 ```yaml
-# This becomes 0 0 * * * /usr/local/bin/pywikibot archivebot Template:Autoarchive/config -lang:metawiki
-metawiki: # your wiki's database name
-  - name: 'archivebot-job' # MUST BE UNIQUE, no other crontab entry for your wiki must have the same name
-    ensure: 'present' # present to enable, absent to disable
-    script: 'archivebot' # Pywikibot script you want to run
-    scriptparams: 'Template:Autoarchive/config' # parameters for that script, set to '' if there are no parameters
-    hour: '0' # regular crontab parameters
+# This example defines a job that runs every day at midnight:
+metawiki:  # your wiki's database name
+  - name: 'archivebot-job'  # MUST BE UNIQUE within this wiki
+    ensure: 'present'  # 'present' to enable, 'absent' to disable
+    script: 'archivebot'  # Pywikibot script to run
+    scriptparams: 'Template:Autoarchive/config'  # Parameters to pass to the script ('' if none)
+    hour: '0'  # Time fields
     minute: '0'
     month: '*'
     monthday: '*'
     weekday: '*'
 ```
 
-All parameters from the example must be present!
+> This job will be translated into a `systemd` timer with an `OnCalendar=*‐*‐* 00:00:00`, which means:
+> _“Run the specified script every day at midnight.”_
 
-# Adding langs
+Behind the scenes, this results in:
+- a `.service` unit to run:
+  ```
+  /usr/local/bin/pywikibot archivebot Template:Autoarchive/config -lang:metawiki
+  ```
+- and a `.timer` unit that triggers it on the defined schedule.
 
-All wikis are part of the `wikitide` family in the Pywikibot config. Langs are used to select wikis based on their database name, as it is a unique identifier for wikis on Miraheze.
+All parameters shown in the example are **mandatory**.
 
-They only have one parameter: `domain`, which is the domain for the wiki.
+---
+
+## Adding langs
+
+All wikis belong to the `wikitide` family in the Pywikibot configuration. Each wiki must be listed by its database name with its associated domain.
 
 Example:
 
@@ -39,6 +51,11 @@ metawiki:
   domain: 'meta.miraheze.org'
 ```
 
-# License
+This mapping allows Pywikibot to target the correct wiki based on the `-lang` parameter (which corresponds to the database name).
 
-Licensed under the GPL 3.0 or later.
+---
+
+## License
+
+Licensed under the GNU General Public License v3.0 or later.  
+See: https://www.gnu.org/licenses/gpl-3.0.html
