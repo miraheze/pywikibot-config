@@ -1,15 +1,15 @@
-name: Check if timers.yaml is sorted alphabetically
+name: Check if periodic_jobs.yaml is sorted alphabetically
 
 on:
   push:
     paths:
-      - .github/workflows/timers-sorting-check.yml
-      - timers.yaml
+      - .github/workflows/periodic_jobs-sorting-check.yml
+      - periodic_jobs.yaml
 
   pull_request:
     paths:
-      - .github/workflows/timers-sorting-check.yml
-      - timers.yaml
+      - .github/workflows/periodic_jobs-sorting-check.yml
+      - periodic_jobs.yaml
 
 jobs:
   check:
@@ -30,6 +30,7 @@ jobs:
       - name: Run YAML Sorting Check
         run: |
           python3 -c '
+          import sys
           import yaml
 
           def check_alphabetical_order(data):
@@ -37,17 +38,17 @@ jobs:
               out_of_order_keys = [keys[i] for i in range(1, len(keys)) if keys[i] < keys[i-1]]
               return out_of_order_keys
 
-          with open("timers.yaml", "r") as file:
+          with open("periodic_jobs.yaml", "r") as file:
               data = yaml.safe_load(file)
 
           out_of_order = check_alphabetical_order(data)
           if len(out_of_order) == 0:
-              print("Top-level keys in timers.yaml are sorted alphabetically.")
+              print("Top-level keys in periodic_jobs.yaml are sorted alphabetically.")
           else:
-              print("Top-level keys in timers.yaml are not sorted alphabetically:")
+              print("Top-level keys in periodic_jobs.yaml are not sorted alphabetically:")
               for key in out_of_order:
                   print(key)
-              exit(1)
+              sys.exit(1)
           '
 
   notify-irc:
