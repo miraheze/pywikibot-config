@@ -1,17 +1,17 @@
-name: Check if timers.yaml is valid
+name: Check if periodic_jobs.yaml is valid
 
 on:
   push:
     paths:
-      - .github/workflows/timers-check.yml
-      - scripts/timers-check.py
-      - timers.yaml
+      - .github/workflows/periodic_jobs-check.yml
+      - scripts/periodic_jobs-check.py
+      - periodic_jobs.yaml
 
   pull_request:
     paths:
-      - .github/workflows/timers-check.yml
-      - scripts/timers-check.py
-      - timers.yaml
+      - .github/workflows/periodic_jobs-check.yml
+      - scripts/periodic_jobs-check.py
+      - periodic_jobs.yaml
 
 jobs:
   check:
@@ -29,8 +29,8 @@ jobs:
       - name: Install PyYAML
         run: pip3 install pyyaml
 
-      - name: Run scripts/timers-check.py
-        run: python3 scripts/timers-check.py
+      - name: Run scripts/periodic_jobs-check.py
+        run: python3 scripts/periodic_jobs-check.py
 
   notify-irc:
     needs: check
