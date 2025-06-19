@@ -52,7 +52,7 @@ with open('periodic_jobs.yaml', 'r') as file:
                 print(f'Missing keys in dict {i} of wiki {dbname}, have: {dict.keys()}, expected: {required_keys}')
                 sys.exit(1)
             if dict['name'] in name_list:
-                print(f'Job entry with name {dict["name"]} on wiki {dbname} defined twice')
+                print(f'Periodic job entry with name {dict["name"]} on wiki {dbname} defined twice')
                 sys.exit(1)
             name_list.append(dict['name'])
             if dict['ensure'] != 'present' and dict['ensure'] != 'absent':
