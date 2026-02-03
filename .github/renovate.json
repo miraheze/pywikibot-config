@@ -1,0 +1,19 @@
+{
+	"extends": [ "config:recommended" ],
+
+	"prConcurrentLimit": 1,
+
+	"packageRules": [
+		{
+			"matchPackagePatterns": [ "*" ],
+			"groupName": "all dependencies",
+			"groupSlug": "all-deps"
+		},
+		{
+			"matchManagers": [ "github-actions" ],
+			"rangeStrategy": "replace"
+		}
+	],
+
+	"labels": [ "dependencies" ]
+}
