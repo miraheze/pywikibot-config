@@ -2,6 +2,7 @@
 	"extends": [ "config:recommended" ],
 
 	"prConcurrentLimit": 1,
+	"separateMajorMinor": false,
 
 	"packageRules": [
 		{
